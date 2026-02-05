@@ -114,10 +114,8 @@ export class UIManager {
         const message = encodeURIComponent(`Acesse este link: ${this.generatedLink}`);
         const url = `https://wa.me/${phone}?text=${message}`;
 
-        if (!this.whatsappWindow || this.whatsappWindow.closed) {
-            this.whatsappWindow = window.open(url, 'whatsappWindow');
-        } else {
-            this.whatsappWindow.location.href = url;
+        this.whatsappWindow = window.open(url, 'whatsappWindow');
+        if (this.whatsappWindow) {
             this.whatsappWindow.focus();
         }
     }
@@ -149,7 +147,14 @@ export class UIManager {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `gravacao_${Date.now()}.webm`;
+            
+            // Get phone number and format date
+            const phone = this.recipientPhone.value.replace(/\D/g, '') || 'sem-numero';
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
+            const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '-'); // HH-MM-SS
+            
+            a.download = `${phone}_${dateStr}_${timeStr}.webm`;
             a.click();
             this.setStatus('Gravação salva!');
         };

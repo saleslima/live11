@@ -133,9 +133,19 @@ export class ConnectionSetup {
                         }
                     }
                 } else if (data.type === 'link_deleted') {
-                    alert('O link foi excluído pelo remetente. A conexão será encerrada.');
                     this.camera.stopLocalCamera();
-                    window.close();
+                    this.ui.setStatus('Link excluído. Conexão encerrada.', '#ef4444');
+                    
+                    // Disable all controls
+                    const btnSwitchCamera = document.getElementById("btnSwitchCamera");
+                    const btnReload = document.getElementById("btnReload");
+                    if (btnSwitchCamera) btnSwitchCamera.disabled = true;
+                    if (btnReload) btnReload.disabled = true;
+                    
+                    // Hide video
+                    if (this.camera.localVideoElement) {
+                        this.camera.localVideoElement.style.display = 'none';
+                    }
                 }
             });
         } catch (error) {
